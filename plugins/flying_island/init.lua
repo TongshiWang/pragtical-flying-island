@@ -469,11 +469,60 @@ local function apply_window_effects()
   end
 end
 
+local function apply_inline_island_theme()
+  style.background       = { common.color "#1E1F22" }
+  style.background2      = { common.color "#191A1C" }
+  style.background3      = { common.color "#26282B" }
+  style.text             = { common.color "#DFE1E5" }
+  style.caret            = { common.color "#BBBBBB" }
+  style.accent           = { common.color "#3574F0" }
+  style.dim              = { common.color "#6F737A" }
+  style.divider          = { common.color "#26282B" }
+  style.selection        = { common.color "#214283" }
+  style.line_number      = { common.color "#4E5157" }
+  style.line_number2     = { common.color "#9DA0A8" }
+  style.line_highlight   = { common.color "#2B2D30" }
+  style.scrollbar        = { common.color "#80808059" }
+  style.scrollbar2       = { common.color "#8080808C" }
+  style.scrollbar_track  = { common.color "#00000000" }
+  style.nagbar           = { common.color "#26282B" }
+  style.nagbar_text      = { common.color "#DFE1E5" }
+  style.nagbar_dim       = { common.color "#00000066" }
+  style.drag_overlay     = { common.color "#3574F033" }
+  style.drag_overlay_tab = { common.color "#3574F0" }
+  style.good             = { common.color "#549159" }
+  style.warn             = { common.color "#D6AE58" }
+  style.error            = { common.color "#DB5C5C" }
+  style.modified         = { common.color "#375FAD" }
+  style.island_frame         = { common.color "#26282B" }
+  style.island_editor        = { common.color "#1E1F22" }
+  style.island_sidebar       = { common.color "#191A1C" }
+  style.island_border        = { common.color "#2B2D30" }
+  style.island_tab_active_bg = { common.color "#25324D" }
+  style.island_tab_active_bd = { common.color "#35538F" }
+  style.island_tab_hover_bg  = { common.color "#2B2D30" }
+  style.island_tree_select   = { common.color "#2E436E" }
+  style.island_tree_unfocus  = { common.color "#393B40" }
+  style.island_tree_hover    = { common.color "#252629" }
+  style.syntax["normal"]     = { common.color "#A9B7C6" }
+  style.syntax["symbol"]     = { common.color "#A9B7C6" }
+  style.syntax["comment"]    = { common.color "#7A7E85" }
+  style.syntax["keyword"]    = { common.color "#CC7832" }
+  style.syntax["keyword2"]   = { common.color "#B5B6E3" }
+  style.syntax["number"]     = { common.color "#6897BB" }
+  style.syntax["literal"]    = { common.color "#9876AA" }
+  style.syntax["string"]     = { common.color "#6A8759" }
+  style.syntax["operator"]   = { common.color "#A9B7C6" }
+  style.syntax["function"]   = { common.color "#FFC66D" }
+  style.syntax["annotation"] = { common.color "#BBB529" }
+end
+
 local function apply_island_theme()
   if not (cfg.enabled and cfg.apply_theme) then return end
-  core.try(function()
-    core.reload_module("colors.flying_island_dark")
-  end)
+  local ok = pcall(core.reload_module, "colors.flying_island_dark")
+  if not ok then
+    apply_inline_island_theme()
+  end
   core.redraw = true
 end
 
