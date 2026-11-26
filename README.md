@@ -1,41 +1,71 @@
 # pragtical-flying-island
 
-> **改造来源 / Ported From**
-> - 本项目改造移植自 VS Code 主题与界面增强项目：**[am1dreaming/Flying-Island-dark-for-VS-code](https://github.com/am1dreaming/Flying-Island-dark-for-VS-code)**
-> - 图标资源来自：**[chadalen/vscode-jetbrains-icon-theme](https://github.com/chadalen/vscode-jetbrains-icon-theme)**（JetBrains 2023+ Dark SVG 图标集）
+**English** | [简体中文](README.zh-CN.md)
 
-为 [Pragtical](https://pragtical.dev/) 打造的 **Flying Island Dark** 视觉插件与配色主题（`mod-version: 3`）。
+[![Pragtical mod-version](https://img.shields.io/badge/Pragtical-mod--version%203-3574F0.svg)](https://pragtical.dev/)
+[![Release](https://img.shields.io/github/v/release/TongshiWang/pragtical-flying-island?color=549159)](https://github.com/TongshiWang/pragtical-flying-island/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## 功能特性
+> **Ported From / Credits**
+> - UI design, floating islands palette, and translucency style ported from **[am1dreaming/Flying-Island-dark-for-VS-code](https://github.com/am1dreaming/Flying-Island-dark-for-VS-code)**
+> - 120 SVG icons sourced from **[chadalen/vscode-jetbrains-icon-theme](https://github.com/chadalen/vscode-jetbrains-icon-theme)** (JetBrains 2023+ UI Dark icon set)
 
-- **JetBrains 2023+ Dark 彩色 SVG 图标**：
-  - 内置 120 个 SVG 图标与 `theme.json` 文件/目录名映射规则。
-  - 通过 Pragtical 原生 `canvas.load_svg_image` 光栅化并缓存，在**文件树（TreeView）**与**文档标签页（Tabs）**中显示高清文件与文件夹图标。
-- **Floating Islands 圆角浮岛 UI**：
-  - 文件树与编辑器窗格采用圆角悬浮浮岛（默认圆角 `10px`、间距 `4px`，外框 `#26282B`）。
-  - 活动标签页采用胶囊式高亮（`#25324D` 填充 + `#35538F` 描边）。
-  - 文件树采用圆角选中行（`#2E436E`）、矢量折叠箭头与工具栏圆角悬停高亮。
-- **窗口透明与 Windows 11 原生 DWM 模糊**：
-  - 支持可调窗口不透明度（默认 `0.93`）。
-  - 在 Windows 11 下通过 LuaJIT FFI 调用原生 DWM 属性（暗色窗口、圆角窗口、Acrylic / Mica / Tabbed / Blur Behind 背景合成效果）。
-- **Flying Island Dark 暗色配色主题**：
-  - 配套 `colors/flying_island_dark.lua`，融合 JetBrains New UI 暗色调（`#191A1C` / `#1E1F22` / `#26282B`）与 Darcula Contrast 语法着色。
+Bring the **JetBrains New UI Floating Islands**, **JetBrains 2023+ Dark SVG file/folder icons**, **Darcula Contrast color theme**, and **translucent Windows 11 DWM blur** to [Pragtical](https://pragtical.dev/).
 
-## 快捷键与菜单
+<p align="center">
+  <img src="docs/preview-translucent.png" alt="Flying Island Dark Translucent Preview" width="95%" />
+</p>
 
-可在顶部菜单 **View > Flying Island** 或使用以下快捷键控制：
+<p align="center">
+  <img src="docs/preview-main.png" alt="Flying Island Dark Main UI and JetBrains SVG Icons" width="95%" />
+</p>
 
-| 快捷键 | 功能 |
-| :--- | :--- |
-| `Ctrl+Alt+T` | 切换窗口透明效果 |
-| `Ctrl+Alt+=` | 提高窗口不透明度 |
-| `Ctrl+Alt+-` | 降低窗口不透明度 |
+---
 
-所有参数均可直接在 **Settings > Plugins > Flying Island** 中实时可视化调整。
+## Features
 
-## 安装方法
+- **JetBrains 2023+ Dark SVG Icons**:
+  - Bundles 120 high-DPI SVG icons with `theme.json` filename, compound-extension (`*.test.ts`, `CMakeLists.txt`, `Dockerfile`, `package.json`), and folder mappings (`tests`, `.github`, root module).
+  - Rasterizes & caches SVGs cleanly via Pragtical's native `canvas.load_svg_image` in both **TreeView** and **Document Tabs**.
+- **Floating Rounded Islands UI**:
+  - Frames TreeView (`#191A1C`) and editor leaf panes (`#1E1F22`) as rounded floating islands (default `10px` corner radius, `4px` outer gap in `#26282B`).
+  - Pill-shaped active editor tab (`#25324D` fill, `#35538F` outline), rounded TreeView selection pills (`#2E436E`), vector chevrons, and rounded Toolbar highlights.
+- **Window Transparency & Windows 11 Native Blur**:
+  - Adjustable window opacity (`0.93` by default) via `system.set_window_opacity`.
+  - On Windows 11, uses LuaJIT `ffi` to enable native Dark Mode title frame, rounded window corners, DWM System Backdrop (`Acrylic`, `Mica`, `Tabbed`), and `Blur Behind`.
+- **Flying Island Dark Theme (`colors/flying_island_dark.lua`)**:
+  - Auto-applied on startup (unless disabled in Settings or overridden by another chosen theme), combining JetBrains New UI surface colors with Darcula Contrast syntax highlighting.
 
-### 方式一：PowerShell 一键安装（Windows）
+---
+
+## Platform Compatibility
+
+Tested on **Pragtical 3.15.0-jit** (`mod-version: 3`).
+
+| Feature | Windows 10 / 11 | Linux | macOS |
+| :--- | :---: | :---: | :---: |
+| Flying Island Dark color scheme | Yes | Yes | Yes |
+| JetBrains 2023+ SVG icons (Tree & Tabs) | Yes | Yes | Yes |
+| Floating rounded islands & pill tabs | Yes | Yes | Yes |
+| Window opacity (`system.set_window_opacity`) | Yes | Depends on WM/compositor | Yes |
+| Native DWM Acrylic / Mica / Tabbed blur | Windows 11 | Skipped cleanly | Skipped cleanly |
+
+---
+
+## Installation
+
+### Method 1: PPM (Recommended — Windows / Linux / macOS)
+
+You can install directly from this repository using Pragtical's built-in `ppm` CLI (even before the official `pragtical/plugins` PR is merged):
+
+```sh
+ppm repo add https://github.com/TongshiWang/pragtical-flying-island.git:main
+ppm install flying_island
+```
+
+Or via Pragtical GUI: **Tools > Plugin Manager > Add Repository URL**, paste `https://github.com/TongshiWang/pragtical-flying-island.git:main`, and install `flying_island`.
+
+### Method 2: PowerShell Installer (Windows)
 
 ```powershell
 git clone https://github.com/TongshiWang/pragtical-flying-island.git
@@ -43,21 +73,49 @@ cd pragtical-flying-island
 .\install.ps1
 ```
 
-### 方式二：手动安装
+### Method 3: Manual Install
 
-将本仓库中的文件复制到 Pragtical 用户配置目录：
+Copy the files into your Pragtical `USERDIR`:
 - `plugins/flying_island/` -> `<USERDIR>/plugins/flying_island/`
 - `colors/flying_island_dark.lua` -> `<USERDIR>/colors/flying_island_dark.lua`
 
-> Windows 默认 `<USERDIR>` 为 `%LOCALAPPDATA%\Programs\Pragtical\user`；Linux / macOS 为 `~/.config/pragtical`。
+Common `USERDIR` locations:
+- **Windows (Installer / Portable with `user` folder)**: `%LOCALAPPDATA%\Programs\Pragtical\user`
+- **Windows (Config dir)**: `%USERPROFILE%\.config\pragtical`
+- **Linux / macOS**: `~/.config/pragtical`
 
-重启 Pragtical 即可生效。
+Restart Pragtical after installing.
 
-## 致谢 (Credits)
+---
 
-- 视觉设计、配色与透明风格灵感来源：[am1dreaming/Flying-Island-dark-for-VS-code](https://github.com/am1dreaming/Flying-Island-dark-for-VS-code)
-- JetBrains 2023+ Dark SVG 图标集来源：[chadalen/vscode-jetbrains-icon-theme](https://github.com/chadalen/vscode-jetbrains-icon-theme)
+## Shortcuts & Settings
 
-## 许可证
+Control everything live from **Tools > Settings > Plugins > Flying Island**, **View > Flying Island**, or via hotkeys:
+
+| Shortcut | Action |
+| :--- | :--- |
+| `Ctrl+Alt+T` | Toggle window transparency on/off |
+| `Ctrl+Alt+=` | Increase window opacity (+3%) |
+| `Ctrl+Alt+-` | Decrease window opacity (-3%) |
+
+Configurable options include: `enabled`, `apply_theme`, `show_treeview_icons`, `show_tab_icons`, `island_style`, `island_radius`, `island_gap`, `opacity`, and `win_blur` (`acrylic` / `mica` / `tabbed` / `blur` / `off`).
+
+---
+
+## Uninstallation
+
+- **If installed via PPM**:
+  ```sh
+  ppm uninstall flying_island flying_island_dark
+  ```
+- **If installed via PowerShell on Windows**:
+  ```powershell
+  .\uninstall.ps1
+  ```
+- **Manual**: Delete `<USERDIR>/plugins/flying_island` and `<USERDIR>/colors/flying_island_dark.lua`, then restart Pragtical.
+
+---
+
+## License
 
 [MIT License](LICENSE)

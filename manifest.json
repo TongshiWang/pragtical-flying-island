@@ -1,0 +1,46 @@
+{
+  "addons": [
+    {
+      "id": "flying_island_dark",
+      "name": "Flying Island Dark",
+      "description": "JetBrains New UI Islands (#191A1C / #1E1F22 / #26282B) & Darcula Contrast color scheme ported from Flying-Island-dark-for-VS-code.",
+      "version": "1.0.0",
+      "mod_version": "3",
+      "type": "color",
+      "path": "colors/flying_island_dark.lua",
+      "tags": [
+        "dark",
+        "darcula",
+        "jetbrains"
+      ],
+      "extra": {
+        "author": "TongshiWang",
+        "license": "MIT"
+      }
+    },
+    {
+      "id": "flying_island",
+      "name": "Flying Island",
+      "description": "JetBrains 2023+ Dark SVG icons, floating rounded islands UI, pill tabs, and Windows 11 transparency/DWM blur ported from Flying-Island-dark-for-VS-code.",
+      "version": "1.0.0",
+      "mod_version": "3",
+      "type": "plugin",
+      "path": "plugins/flying_island",
+      "dependencies": {
+        "flying_island_dark": {}
+      },
+      "tags": [
+        "ui",
+        "theme",
+        "icons",
+        "svg",
+        "transparency",
+        "jetbrains"
+      ],
+      "extra": {
+        "author": "TongshiWang",
+        "license": "MIT"
+      }
+    }
+  ]
+}
