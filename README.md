@@ -54,16 +54,17 @@ Tested on **Pragtical 3.15.0-jit** (`mod-version: 3`).
 
 ## Installation
 
-### Method 1: PPM (Recommended — Windows / Linux / macOS)
+### Method 1: PPM / Plugin Manager (Recommended — Windows / Linux / macOS)
 
-You can install directly from this repository using Pragtical's built-in `ppm` CLI (even before the official `pragtical/plugins` PR is merged):
+Now included in the official `pragtical/plugins` and `pragtical/colors` repositories! Install with a single command via `ppm`:
 
 ```sh
-ppm repo add https://github.com/TongshiWang/pragtical-flying-island.git:main
 ppm install flying_island
 ```
 
-Or via Pragtical GUI: **Tools > Plugin Manager > Add Repository URL**, paste `https://github.com/TongshiWang/pragtical-flying-island.git:main`, and install `flying_island`.
+- Or search for **`flying_island`** directly inside Pragtical's **Tools > Plugin Manager** and click **Install**.
+- To install only the standalone dark color scheme: `ppm install flying_island_dark`.
+- *(Optional)* To track bleeding-edge `main` directly: `ppm repo add https://github.com/TongshiWang/pragtical-flying-island.git:main` before running `ppm install flying_island`.
 
 ### Method 2: PowerShell Installer (Windows)
 

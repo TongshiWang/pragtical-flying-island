@@ -51,14 +51,17 @@
 
 ## 安装方法
 
-### 方式一：通过 PPM 安装（推荐，全平台适用）
+### 方式一：通过 PPM / 官方插件管理器安装（推荐，全平台适用）
+
+现已正式收录进 Pragtical 官方插件与配色目录！一行命令即可安装：
 
 ```sh
-ppm repo add https://github.com/TongshiWang/pragtical-flying-island.git:main
 ppm install flying_island
 ```
 
-或在 Pragtical 中打开 **Tools > Plugin Manager > Add Repository URL**，填入 `https://github.com/TongshiWang/pragtical-flying-island.git:main` 并安装 `flying_island`。
+- 也可以直接在 Pragtical 中打开 **工具 > 插件管理器 (Plugin Manager)**，搜索 **`flying_island`** 一键安装。
+- 若仅需独立配色方案：`ppm install flying_island_dark`。
+- *（可选）* 如需抢先体验 `main` 分支最新提交，可先执行 `ppm repo add https://github.com/TongshiWang/pragtical-flying-island.git:main`。
 
 ### 方式二：PowerShell 一键安装（Windows）
 
