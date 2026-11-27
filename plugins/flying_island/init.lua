@@ -30,15 +30,19 @@ config.plugins.flying_island = common.merge({
   show_treeview_icons = true,
   show_tab_icons = true,
   island_style = true,
+  island_panels = true,
+  pill_tabs = true,
+  rounded_tree_rows = true,
+  styled_toolbar = true,
   island_radius = 10,
   island_gap = 4,
+  enable_transparency = true,
   opacity = 0.93,
   win_blur = "acrylic"
 }, config.plugins.flying_island)
 
 local cfg = config.plugins.flying_island
 
-local transparency_temp_off = false
 local svg_cache = {}
 local last_icon_scale = SCALE
 
@@ -456,7 +460,7 @@ end
 local function apply_window_effects()
   local target_opacity = 1.0
   local blur_mode = "off"
-  if cfg.enabled and not transparency_temp_off then
+  if cfg.enabled and cfg.enable_transparency then
     target_opacity = common.clamp(tonumber(cfg.opacity) or 0.93, 0.30, 1.00)
     blur_mode = cfg.win_blur or "acrylic"
   end
@@ -568,7 +572,7 @@ end
 
 local orig_tv_draw_item_chevron = TreeView.draw_item_chevron
 function TreeView:draw_item_chevron(item, active, hovered, x, y, w, h)
-  if cfg.enabled and cfg.island_style then
+  if cfg.enabled and cfg.island_style and cfg.rounded_tree_rows then
     if item.type == "dir" then
       local color = hovered and style.text or style.dim
       local cx = common.round(x + style.padding.x / 2 - 2 * SCALE)
@@ -596,7 +600,7 @@ end
 local orig_tv_get_item_text = TreeView.get_item_text
 function TreeView:get_item_text(item, active, hovered)
   local text, font, color = orig_tv_get_item_text(self, item, active, hovered)
-  if cfg.enabled and cfg.island_style and (active or hovered) and color == style.accent then
+  if cfg.enabled and cfg.island_style and cfg.rounded_tree_rows and (active or hovered) and color == style.accent then
     color = style.text
   end
   return text, font, color
@@ -604,9 +608,9 @@ end
 
 local orig_tv_draw_item_background = TreeView.draw_item_background
 function TreeView:draw_item_background(item, active, hovered, x, y, w, h)
-  if cfg.enabled and cfg.island_style then
+  if cfg.enabled and cfg.island_style and cfg.rounded_tree_rows then
     if active or hovered then
-      local gap = common.round((cfg.island_gap or 4) * SCALE)
+      local gap = cfg.island_panels and common.round((cfg.island_gap or 4) * SCALE) or 0
       local inset_x = gap + common.round(4 * SCALE)
       local inset_y = common.round(1 * SCALE)
       local rw = math.max(8, self.size.x - inset_x * 2)
@@ -632,7 +636,7 @@ end
 local orig_tv_draw = TreeView.draw
 function TreeView:draw()
   orig_tv_draw(self)
-  if cfg.enabled and cfg.island_style and self.visible and self.size.x > 16 and self.size.y > 16 then
+  if cfg.enabled and cfg.island_style and cfg.island_panels and self.visible and self.size.x > 16 and self.size.y > 16 then
     draw_island_frame(
       self.position.x, self.position.y,
       self.size.x, self.size.y,
@@ -648,7 +652,8 @@ end
 --------------------------------------------------------------------------------
 local orig_node_draw_tab = Node.draw_tab
 function Node:draw_tab(view, is_active, is_hovered, is_close_hovered, x, y, w, h, standalone)
-  if not cfg.enabled or (not cfg.island_style and not cfg.show_tab_icons) then
+  local use_pill_tabs = cfg.island_style and cfg.pill_tabs
+  if not cfg.enabled or (not use_pill_tabs and not cfg.show_tab_icons) then
     return orig_node_draw_tab(self, view, is_active, is_hovered, is_close_hovered, x, y, w, h, standalone)
   end
 
@@ -657,8 +662,8 @@ function Node:draw_tab(view, is_active, is_hovered, is_close_hovered, x, y, w, h
   local th = h - margin_y
 
   local ix, iy, iw, ih = x, ty, w, th
-  if cfg.island_style then
-    local gap = standalone and 0 or common.round((cfg.island_gap or 4) * SCALE)
+  if use_pill_tabs then
+    local gap = (standalone or not cfg.island_panels) and 0 or common.round((cfg.island_gap or 4) * SCALE)
     local top_off = math.max(gap + common.round(2 * SCALE), common.round(4 * SCALE))
     local bot_off = common.round(3 * SCALE)
     local side_off = common.round(2 * SCALE)
@@ -740,7 +745,7 @@ end
 local orig_node_draw = Node.draw
 function Node:draw()
   orig_node_draw(self)
-  if cfg.enabled and cfg.island_style and self.type == "leaf"
+  if cfg.enabled and cfg.island_style and cfg.island_panels and self.type == "leaf"
      and self.size.x > 24 and self.size.y > 24
      and not is_chrome_view(self.active_view)
   then
@@ -766,7 +771,7 @@ end
 if ToolbarView then
   local orig_tb_draw = ToolbarView.draw
   function ToolbarView:draw()
-    if not (cfg.enabled and cfg.island_style) then
+    if not (cfg.enabled and cfg.island_style and cfg.styled_toolbar) then
       return orig_tb_draw(self)
     end
     if not self:is_visible() then return end
@@ -805,24 +810,24 @@ end)
 -- Commands, Keybindings & Menu Items
 --------------------------------------------------------------------------------
 local function notify_opacity()
-  local effective = (cfg.enabled and not transparency_temp_off) and cfg.opacity or 1.0
+  local effective = (cfg.enabled and cfg.enable_transparency) and cfg.opacity or 1.0
   core.status_view:show_message("i", style.accent, string.format("Flying Island Opacity: %d%%", common.round(effective * 100)))
 end
 
 command.add(nil, {
   ["flying-island:toggle-transparency"] = function()
-    transparency_temp_off = not transparency_temp_off
+    cfg.enable_transparency = not cfg.enable_transparency
     apply_window_effects()
     notify_opacity()
   end,
   ["flying-island:increase-opacity"] = function()
-    transparency_temp_off = false
+    cfg.enable_transparency = true
     cfg.opacity = common.clamp(common.round((cfg.opacity + 0.03) * 100) / 100, 0.40, 1.00)
     apply_window_effects()
     notify_opacity()
   end,
   ["flying-island:decrease-opacity"] = function()
-    transparency_temp_off = false
+    cfg.enable_transparency = true
     cfg.opacity = common.clamp(common.round((cfg.opacity - 0.03) * 100) / 100, 0.40, 1.00)
     apply_window_effects()
     notify_opacity()
@@ -831,10 +836,34 @@ command.add(nil, {
     cfg.island_style = not cfg.island_style
     core.redraw = true
   end,
+  ["flying-island:toggle-island-panels"] = function()
+    cfg.island_panels = not cfg.island_panels
+    core.redraw = true
+  end,
+  ["flying-island:toggle-pill-tabs"] = function()
+    cfg.pill_tabs = not cfg.pill_tabs
+    core.redraw = true
+  end,
+  ["flying-island:toggle-tree-rows"] = function()
+    cfg.rounded_tree_rows = not cfg.rounded_tree_rows
+    core.redraw = true
+  end,
+  ["flying-island:toggle-toolbar-style"] = function()
+    cfg.styled_toolbar = not cfg.styled_toolbar
+    core.redraw = true
+  end,
   ["flying-island:toggle-icons"] = function()
     local next_state = not (cfg.show_treeview_icons or cfg.show_tab_icons)
     cfg.show_treeview_icons = next_state
     cfg.show_tab_icons = next_state
+    core.redraw = true
+  end,
+  ["flying-island:toggle-treeview-icons"] = function()
+    cfg.show_treeview_icons = not cfg.show_treeview_icons
+    core.redraw = true
+  end,
+  ["flying-island:toggle-tab-icons"] = function()
+    cfg.show_tab_icons = not cfg.show_tab_icons
     core.redraw = true
   end,
 })
@@ -853,9 +882,9 @@ if core.menu_view and core.menu_view.register then
       items = {
         {
           id = "fi-toggle-transparency",
-          text = "Toggle Transparency",
+          text = "Enable Window Transparency & Blur",
           command = "flying-island:toggle-transparency",
-          checked = function() return cfg.enabled and not transparency_temp_off end
+          checked = function() return cfg.enabled and cfg.enable_transparency end
         },
         {
           id = "fi-increase-opacity",
@@ -867,6 +896,7 @@ if core.menu_view and core.menu_view.register then
           text = "Decrease Opacity",
           command = "flying-island:decrease-opacity"
         },
+        MenuView.DIVIDER,
         {
           id = "fi-toggle-island-style",
           text = "Floating Rounded Islands UI Style",
@@ -874,10 +904,47 @@ if core.menu_view and core.menu_view.register then
           checked = function() return cfg.island_style end
         },
         {
+          id = "fi-toggle-island-panels",
+          text = "Floating Rounded Panel Islands",
+          command = "flying-island:toggle-island-panels",
+          checked = function() return cfg.island_panels end
+        },
+        {
+          id = "fi-toggle-pill-tabs",
+          text = "Pill-Shaped Editor Tabs",
+          command = "flying-island:toggle-pill-tabs",
+          checked = function() return cfg.pill_tabs end
+        },
+        {
+          id = "fi-toggle-tree-rows",
+          text = "Rounded File Tree Rows & Chevrons",
+          command = "flying-island:toggle-tree-rows",
+          checked = function() return cfg.rounded_tree_rows end
+        },
+        {
+          id = "fi-toggle-toolbar-style",
+          text = "Styled Activity Toolbar",
+          command = "flying-island:toggle-toolbar-style",
+          checked = function() return cfg.styled_toolbar end
+        },
+        MenuView.DIVIDER,
+        {
           id = "fi-toggle-icons",
           text = "JetBrains SVG Icons",
           command = "flying-island:toggle-icons",
           checked = function() return cfg.show_treeview_icons or cfg.show_tab_icons end
+        },
+        {
+          id = "fi-toggle-treeview-icons",
+          text = "File Tree SVG Icons",
+          command = "flying-island:toggle-treeview-icons",
+          checked = function() return cfg.show_treeview_icons end
+        },
+        {
+          id = "fi-toggle-tab-icons",
+          text = "Editor Tab SVG Icons",
+          command = "flying-island:toggle-tab-icons",
+          checked = function() return cfg.show_tab_icons end
         },
       }
     }
@@ -942,12 +1009,23 @@ config.plugins.flying_island.config_spec = {
   },
   {
     label = "Floating Rounded Islands UI Style",
-    description = "Enable rounded panel islands, pill-shaped active tabs, and rounded selection rows.",
+    description = "Master switch for Floating Islands UI styling (panels, pill tabs, tree rows, and toolbar).",
     path = "island_style",
     type = "toggle",
     default = true,
     on_apply = function(value)
       cfg.island_style = value
+      core.redraw = true
+    end
+  },
+  {
+    label = "Floating Rounded Panel Islands",
+    description = "Draw rounded floating island frames around the file tree and editor panes.",
+    path = "island_panels",
+    type = "toggle",
+    default = true,
+    on_apply = function(value)
+      cfg.island_panels = value
       core.redraw = true
     end
   },
@@ -980,6 +1058,50 @@ config.plugins.flying_island.config_spec = {
     end
   },
   {
+    label = "Pill-Shaped Editor Tabs",
+    description = "Render active and hovered document tabs as rounded JetBrains-style pills.",
+    path = "pill_tabs",
+    type = "toggle",
+    default = true,
+    on_apply = function(value)
+      cfg.pill_tabs = value
+      core.redraw = true
+    end
+  },
+  {
+    label = "Rounded File Tree Rows & Chevrons",
+    description = "Use rounded selection/hover pills and vector folder chevrons in TreeView.",
+    path = "rounded_tree_rows",
+    type = "toggle",
+    default = true,
+    on_apply = function(value)
+      cfg.rounded_tree_rows = value
+      core.redraw = true
+    end
+  },
+  {
+    label = "Styled Activity Toolbar",
+    description = "Apply the Flying Island dark activity bar background and rounded hover highlights.",
+    path = "styled_toolbar",
+    type = "toggle",
+    default = true,
+    on_apply = function(value)
+      cfg.styled_toolbar = value
+      core.redraw = true
+    end
+  },
+  {
+    label = "Enable Window Transparency & Blur",
+    description = "Enable custom window opacity and Windows 11 native DWM backdrop blur effects.",
+    path = "enable_transparency",
+    type = "toggle",
+    default = true,
+    on_apply = function(value)
+      cfg.enable_transparency = value
+      apply_window_effects()
+    end
+  },
+  {
     label = "Window Opacity",
     description = "Overall window opacity (1.00 is opaque, 0.93 gives translucent glass vibrancy).",
     path = "opacity",
@@ -990,7 +1112,6 @@ config.plugins.flying_island.config_spec = {
     step = 0.01,
     on_apply = function(value)
       cfg.opacity = value
-      transparency_temp_off = false
       apply_window_effects()
     end
   },

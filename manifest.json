@@ -21,8 +21,8 @@
     {
       "id": "flying_island",
       "name": "Flying Island",
-      "description": "JetBrains 2023+ Dark SVG icons, floating rounded islands UI, pill tabs, and Windows 11 transparency/DWM blur ported from Flying-Island-dark-for-VS-code.",
-      "version": "1.0.1",
+      "description": "Modular JetBrains 2023+ Dark SVG icons, floating rounded islands UI, pill tabs, and Windows 11 transparency/DWM blur — toggle each visual domain independently.",
+      "version": "1.1.0",
       "mod_version": "3",
       "type": "plugin",
       "path": "plugins/flying_island",

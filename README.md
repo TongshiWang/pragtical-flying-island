@@ -22,19 +22,28 @@ Bring the **JetBrains New UI Floating Islands**, **JetBrains 2023+ Dark SVG file
 
 ---
 
-## Features
+## Features & Modular Toggles
 
-- **JetBrains 2023+ Dark SVG Icons**:
+Every visual domain in Flying Island can be toggled independently from **Tools > Settings > Plugins > Flying Island** or **View > Flying Island** — mix and match only the parts you want:
+
+- **JetBrains 2023+ Dark SVG Icons** (`show_treeview_icons`, `show_tab_icons`):
   - Bundles 120 high-DPI SVG icons with `theme.json` filename, compound-extension (`*.test.ts`, `CMakeLists.txt`, `Dockerfile`, `package.json`), and folder mappings (`tests`, `.github`, root module).
-  - Rasterizes & caches SVGs cleanly via Pragtical's native `canvas.load_svg_image` in both **TreeView** and **Document Tabs**.
-- **Floating Rounded Islands UI**:
-  - Frames TreeView (`#191A1C`) and editor leaf panes (`#1E1F22`) as rounded floating islands (default `10px` corner radius, `4px` outer gap in `#26282B`).
-  - Pill-shaped active editor tab (`#25324D` fill, `#35538F` outline), rounded TreeView selection pills (`#2E436E`), vector chevrons, and rounded Toolbar highlights.
-- **Window Transparency & Windows 11 Native Blur**:
-  - Adjustable window opacity (`0.93` by default) via `system.set_window_opacity`.
-  - On Windows 11, uses LuaJIT `ffi` to enable native Dark Mode title frame, rounded window corners, DWM System Backdrop (`Acrylic`, `Mica`, `Tabbed`), and `Blur Behind`.
-- **Flying Island Dark Theme (`colors/flying_island_dark.lua`)**:
+  - Toggle **File Tree** icons and **Document Tab** icons independently — SVG tab icons even work cleanly with stock tabs when pill tabs are turned off.
+- **Floating Rounded Islands UI** (`island_style`, `island_panels`, `pill_tabs`, `rounded_tree_rows`, `styled_toolbar`, `island_radius`, `island_gap`):
+  - **Floating Panel Islands** (`island_panels`): Frames TreeView (`#191A1C`) and editor leaf panes (`#1E1F22`) as rounded floating islands (default `10px` radius, `4px` gap).
+  - **Pill Tabs** (`pill_tabs`): Pill-shaped active/hovered editor tabs (`#25324D` fill, `#35538F` outline).
+  - **Rounded TreeView Rows & Chevrons** (`rounded_tree_rows`): Rounded TreeView selection/hover pills (`#2E436E`) and vector chevrons.
+  - **Styled Activity Toolbar** (`styled_toolbar`): `#26282B` activity bar backdrop and rounded icon hover highlights.
+- **Window Transparency & Windows 11 Native Blur** (`enable_transparency`, `opacity`, `win_blur`):
+  - Toggle window translucency on/off independently (`enable_transparency`), tune window opacity (`0.93` default), and pick Windows 11 native DWM effects (`Acrylic`, `Mica`, `Tabbed`, `Blur Behind`, or `Off`).
+- **Flying Island Dark Theme (`colors/flying_island_dark.lua`)** (`apply_theme`):
   - Auto-applied on startup (unless disabled in Settings or overridden by another chosen theme), combining JetBrains New UI surface colors with Darcula Contrast syntax highlighting.
+
+### Popular Combinations
+
+- **Icons-only mode**: Turn off `island_style` and `enable_transparency` (and optionally `apply_theme`) to keep your existing UI & theme while enjoying the 120 JetBrains SVG icons.
+- **Opaque Islands UI mode**: Keep `island_style = true` and turn off `enable_transparency` if you want JetBrains floating islands without window transparency.
+- **Pill tabs & icons without outer panel frames**: Set `island_panels = false` while keeping `pill_tabs = true` and SVG icons enabled.
 
 ---
 
@@ -99,7 +108,7 @@ Control everything live from **Tools > Settings > Plugins > Flying Island**, **V
 | `Ctrl+Alt+=` | Increase window opacity (+3%) |
 | `Ctrl+Alt+-` | Decrease window opacity (-3%) |
 
-Configurable options include: `enabled`, `apply_theme`, `show_treeview_icons`, `show_tab_icons`, `island_style`, `island_radius`, `island_gap`, `opacity`, and `win_blur` (`acrylic` / `mica` / `tabbed` / `blur` / `off`).
+Configurable options include: `enabled`, `apply_theme`, `show_treeview_icons`, `show_tab_icons`, `island_style`, `island_panels`, `island_radius`, `island_gap`, `pill_tabs`, `rounded_tree_rows`, `styled_toolbar`, `enable_transparency`, `opacity`, and `win_blur` (`acrylic` / `mica` / `tabbed` / `blur` / `off`).
 
 ---
 
